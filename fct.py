@@ -13,3 +13,20 @@ def neutralize(signal,exposure):
     mod_fit = mod_wls.fit()
     neu_signal = pd.Series(mod_fit.resid, index=ids)
     return neu_signal
+
+
+def standardize(signal):
+    return (signal-signal.mean())/signal.std()
+
+#################################################
+# More winsorisation methods to be discovered (eg by quantile/p-value)
+##############################################
+def winsorize(signal):
+    md = np.median(signal)
+    upper = md + 3 * signal.std()
+    lower = md - 3 * signal.std()
+        
+    win_signal = np.where(signal>upper, upper, signal)
+    win_signal = np.where(win_signal<lower, lower, signal)
+    return win_signal       
+    
